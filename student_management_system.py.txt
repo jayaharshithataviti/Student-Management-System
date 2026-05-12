@@ -1,0 +1,131 @@
+# Student Management System
+# Features:
+# Add student
+# Delete student
+# Update marks
+# Search students
+# Sort students
+# File handling
+# Average marks
+# Topper student
+students=[]
+try:
+    with open("students.txt","r") as f:
+        for line in f:
+            name,marks=line.strip().split(",")
+            student={"name":name,"marks":int(marks)}
+            students.append(student)
+except FileNotFoundError:
+    pass
+def avg_marks():
+    if len(students)==0:
+        return 0
+    count=0,total=0
+    for s in students:
+        count=count+1
+        total=total+s["marks"]
+    avg=total/count
+    return avg
+def st_above90():
+    result=[]
+    for s in students:
+        if s["marks"]>90:
+            result.append(s["name"])
+    return result
+def save_students():
+        with open("students.txt","w") as f:
+            for s in students:
+                f.write(f"{s['name']},{s['marks']}\n")
+def add_student():
+    name=input("enter name: ")
+    marks=int(input("enter marks: "))
+    student={"name":name,"marks":marks}
+    students.append(student)
+def del_student():
+    name=input("enter name: ")
+    found=False
+    for s in students:
+        if s["name"]==name:
+            students.remove(s)
+            found=True
+            print("deleted successfully")
+    if not found:
+            print("no student found")
+def view_students():
+    for s in students:
+        print(f"Name: {s['name']},Marks: {s['marks']}")
+while True:
+    print("1.add students")
+    print("2.view students")
+    print("3.search student")
+    print("4.Delete student")
+    print("5.Update marks")
+    print("6.sort by marks")
+    print("7.topper student")
+    print("8.search by partial name")
+    print("9.average marks")
+    print("10.student names above 90 marks")
+    print("11.exit")
+    choice=input("enter your choice: ")
+    if choice=="1":
+        add_student()
+        save_students()
+    elif choice=="2":
+        view_students()
+    elif choice=="3":
+        nameofstd=input("enter name of student: ")
+        found=False
+        for s in students:
+            if nameofstd==s["name"]:
+                found=True
+                print(f"Name:{s['name']},Marks:{s['marks']}")
+        if not found:
+            print("student not found")
+    elif choice=="4":
+        del_student()
+        save_students()
+    elif choice=="5":
+        sname=input("enter student name: ")
+        upmarks=int(input("enter the updated marks: "))
+        found=False
+        for s in students:
+            if sname==s["name"]:
+                found=True
+                s["marks"]=upmarks
+                save_students()
+                print("updated successfully")
+                break
+        if not found:
+            print("no student found")
+    elif choice=="6":
+        students.sort(key=lambda x:(-x["marks"],x["name"]))
+        save_students()
+        print("Students are sorted by marks and name")
+    elif choice=="7":
+        if len(students)==0:
+            print("no students")
+        else:
+            top=students[0]
+            for s in students:
+                if s["marks"]>top["marks"]:
+                    top=s
+            print(f"Topper:{top['name']}-{top['marks']}")
+    elif choice=="8":
+        name = input("Enter name to search: ").lower()
+
+        found = False
+        for s in students:
+            if name in s["name"].lower():
+                print(f"Name: {s['name']}, Marks: {s['marks']}")
+                found = True
+        if not found:
+            print("No matching students")
+    elif choice=="9":
+        print(avg_marks())
+    elif choice=="10":
+        for name in st_above90():
+            print(name)
+    elif choice=="11":
+        break
+    else:
+        print("invalid choice")
